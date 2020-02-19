@@ -1,0 +1,8 @@
+var x = a + b * (2 + c);
+var y = -a < b && -b < c || d && (c == -e * -4);
+var a = 1;
+val b = 2;
+val c = "hello world";
+var d = true;
+var f = !d;
+return a;
