@@ -1,14 +1,16 @@
-a[add(1,2): func(a, b, c){return a;}(1, 2, 3)];
-a[1+2:4+5];
-func(a, b) {
-    return a;
-}(1, 2)[1:2](c, d);
+var a = 1;
+val b = 2;
 
-a[1];
-a[2:];
+func (i, j) {
+    return i + j;
+}
 
-var fn = func(a, b) {
-    var c = a + b;
-    return c;
-};
-fn(1, 2);
+var x = y;
+
+{
+    a = 1;
+    b = 2;
+}
+var c = 3
+
+a a b;

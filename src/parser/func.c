@@ -28,7 +28,6 @@ struct expr *parse_func_expr(struct parser *p, struct token *tk) {
         if (IS_TOKEN(tk, TK_COMMA)) {
             advance_token(p);
         } else {
-            EXPECT_TOKEN(tk, TK_RPAR);
             break;
         }
     }
