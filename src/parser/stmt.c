@@ -18,9 +18,11 @@ struct stmt *parse_stmt(struct parser *p, struct token *tk) {
         case TK_RET:
             st = (struct stmt *) parse_return_stmt(p, tk);
             break;
+        /*
         case TK_LBR:
             st = (struct stmt *) parse_block_stmt(p, tk);
             break;
+        */
         case TK_IF:
             st = (struct stmt *) parse_if_stmt(p, tk);
             break;

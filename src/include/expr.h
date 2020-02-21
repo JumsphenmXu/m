@@ -27,11 +27,13 @@ int expr_list_expand(struct expr_list *list);
 int expr_list_add(struct expr_list *list, struct expr *e);
 int expr_list_clean(struct expr_list *list);
 
+// ident
 struct ident_expr {
     COBJECT
 };
 struct expr *parse_ident_expr(struct parser *p);
 
+// true, false, 1, 1.01, "char"
 struct literal_expr {
     COBJECT
     union {
@@ -43,30 +45,32 @@ struct literal_expr {
 };
 struct expr *parse_literal_expr(struct parser *p);
 
+// unary_expr: [op] expr
 struct unary_expr {
     COBJECT
     struct expr *e;
 };
-// unary_expr: op expr
 struct expr *parse_unary_expr(struct parser *p);
 
+// binary_expr: expr op expr
 struct binary_expr {
     COBJECT
     struct expr *left;
     struct token *op;
     struct expr *right;
 };
-// binary_expr: expr op expr
 struct expr *parse_binary_expr(struct parser *p, struct expr *left);
 
+// '(' expr ')'
 struct group_expr {
     COBJECT
     struct expr *e;
     struct token *rp;
 };
-// '(' expr ')'
 struct expr *parse_group_expr(struct parser *p, struct token *tk);
 
+// func: 'func' [ident] '(' parms ')' block_stmt
+// params: token ',' token ',' token...
 struct func_expr {
     COBJECT
     struct token *lp;
@@ -74,11 +78,9 @@ struct func_expr {
     struct token *rp;
     struct block_stmt *stmts;
 };
-// func: 'func' [ident] params block_stmt
-// params: '('token, token, token...')'
 struct expr *parse_func_expr(struct parser *p, struct token *tk);
 
-// a[start:end:step], a[start], a[start:end], a[start:]
+// a[start ':' end], a[start], a[start ':']
 struct index_expr {
     COBJECT
     struct expr *e;
@@ -90,6 +92,8 @@ struct index_expr {
 };
 struct expr *parse_index_expr(struct parser *p, struct expr *e);
 
+// ident '(' params ')'
+// func '(' params ')' block_stmts '(' params ')'
 struct call_expr {
     COBJECT
     struct expr *fn;
@@ -99,4 +103,20 @@ struct call_expr {
 };
 struct expr *parse_call_expr(struct parser *p, struct expr *e);
 
+// '[' expr ',' expr ',' expr ',' ... ']'
+struct array_expr {
+    COBJECT
+    struct expr_list *elems;
+    struct token *rsq;
+};
+struct expr *parse_array_expr(struct parser *p, struct token *tk);
+
+// '{' expr: expr, expr: expr '}'
+struct map_expr {
+    COBJECT
+    struct expr_list *keys;
+    struct expr_list *values;
+    struct token *rbr;
+};
+struct expr *parse_map_expr(struct parser *p, struct token *tk);
 #endif

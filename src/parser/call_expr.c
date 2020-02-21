@@ -13,6 +13,7 @@ struct expr *parse_call_expr(struct parser *p, struct expr *e) {
     CHECK_NULL(ce);
     SET_NODE_TYPE(ce, N_EXPR_CALL);
     ce->fn = e;
+    ce->params = NULL;
 
     tk = get_current_token(p);
     EXPECT_TOKEN(tk, TK_LPAR);
@@ -20,8 +21,10 @@ struct expr *parse_call_expr(struct parser *p, struct expr *e) {
     advance_token(p);
 
     tk = get_current_token(p);
-    ce->params = new_expr_list(4);
-    CHECK_NULL(ce->params);
+    if (!IS_TOKEN(tk, TK_RPAR)) {
+        ce->params = new_expr_list(4);
+        CHECK_NULL(ce->params);
+    }
     while (!IS_TOKEN(tk, TK_RPAR)) {
         e = parse_expr(p, P_LOWEST);
         CHECK_NULL(e);

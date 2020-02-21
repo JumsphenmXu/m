@@ -15,6 +15,7 @@ struct expr *parse_index_expr(struct parser *p, struct expr *e) {
     ie->e = e;
     ie->start = NULL;
     ie->end = NULL;
+    ie->colon = NULL;
 
     tk = get_current_token(p);
     EXPECT_TOKEN(tk, TK_LSQUARE);

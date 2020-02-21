@@ -2,7 +2,8 @@ objs=util.o lex.o program.o var_stmt.o \
 	 return_stmt.o expr.o parser.o main.o \
 	 output.o stmt.o literal.o block_stmt.o \
 	 if_stmt.o for_stmt.o func.o token_list.o \
-	 expr_list.o call_expr.o index_expr.o
+	 expr_list.o call_expr.o index_expr.o \
+	 array_expr.o map_expr.o
 
 util.o: util/util.c include/m.h
 	gcc -c util/util.c -o util.o
@@ -21,6 +22,12 @@ return_stmt.o: parser/return_stmt.c include/m.h
 
 expr.o: parser/expr.c include/m.h
 	gcc -c parser/expr.c -o expr.o
+
+array_expr.o: parser/array_expr.c include/m.h
+	gcc -c parser/array_expr.c -o array_expr.o
+
+map_expr.o: parser/map_expr.c include/m.h
+	gcc -c parser/map_expr.c -o map_expr.o
 
 parser.o: parser/parser.c include/m.h
 	gcc -c parser/parser.c -o parser.o
@@ -57,6 +64,7 @@ index_expr.o: parser/index_expr.c include/m.h
 
 func.o: parser/func.c include/m.h
 	gcc -c parser/func.c -o func.o
+
 
 main.o: main.c include/parser.h
 	gcc -c main.c -o main.o

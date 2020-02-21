@@ -15,6 +15,8 @@ static void print_expr_stmt(struct expr_stmt *st, int n);
 static void print_expr(struct expr *e);
 static void print_ident_expr(struct ident_expr *e);
 static void print_literal_expr(struct literal_expr *e);
+static void print_array_expr(struct array_expr *e);
+static void print_map_expr(struct map_expr *e);
 static void print_unary_expr(struct unary_expr *e);
 static void print_binary_expr(struct binary_expr *e);
 static void print_group_expr(struct group_expr *e);
@@ -77,7 +79,7 @@ static void print_block_stmt(struct block_stmt *st, int n) {
     int i, j;
     NTRANS(i, n);
     printf("{\n");
-    for (j = 0; j < st->stmts->size; ++j) {
+    for (j = 0; st->stmts && j < st->stmts->size; ++j) {
         NTRANS(i, n + 1);
         print_stmt(stmt_list_get(st->stmts, j), n + 1);
     }
@@ -146,6 +148,12 @@ static void print_expr(struct expr *e) {
             break;
         case N_EXPR_LITERAL:
             print_literal_expr((struct literal_expr *) e);
+            break;
+        case N_EXPR_ARRAY:
+            print_array_expr((struct array_expr *) e);
+            break;
+        case N_EXPR_MAP:
+            print_map_expr((struct map_expr *) e);
             break;
         case N_EXPR_UNARY:
             print_unary_expr((struct unary_expr *) e);
@@ -224,12 +232,15 @@ static void print_group_expr(struct group_expr *e) {
 }
 
 static void print_func_expr(struct func_expr *e) {
-    int i;
+    int i, n;
     printf("%s(", token_expr(e->tk->type));
-    for (i = 0; i < e->params->size; i++) {
-        printf("%s", token_list_get(e->params, i)->literal);
-        if (i < e->params->size - 1) {
-            printf(", ");
+    if (e->params) {
+        n = e->params->size;
+        for (i = 0; i < n; i++) {
+            printf("%s", token_list_get(e->params, i)->literal);
+            if (i < n - 1) {
+                printf(", ");
+            }
         }
     }
     printf(")");
@@ -269,4 +280,42 @@ static void print_index_expr(struct index_expr *e) {
     }
     printf("]");
     printf(")");
+}
+
+static void print_array_expr(struct array_expr *e) {
+    int i, n;
+    printf("[");
+    if (e->elems) {
+        n = e->elems->size;
+        for (i = 0; i < n; ++i) {
+            print_expr(expr_list_get(e->elems, i));
+            if (i < n - 1) {
+                printf(",");
+            }
+        }
+    }
+    printf("]");
+}
+
+static void print_map_expr(struct map_expr *e) {
+    int i, n;
+    printf("{");
+    if (e->keys && e->values) {
+        n = e->keys->size;
+        if (n != e->values->size) {
+            printf("map: length of keys is not the same as length of values");
+            printf("}");
+            return;
+        }
+
+        for (i = 0; i < n; i++) {
+            print_expr(expr_list_get(e->keys, i));
+            printf(":");
+            print_expr(expr_list_get(e->values, i));
+            if (i < n - 1) {
+                printf(", ");
+            }
+        }
+    }
+    printf("}");
 }

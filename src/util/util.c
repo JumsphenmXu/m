@@ -22,6 +22,8 @@ static const char *node_name[] = {
     "N_STMT_EXPR",
     "N_EXPR_IDENT",
     "N_EXPR_LITERAL",
+    "N_EXPR_ARRAY",
+    "N_EXPR_MAP",
     "N_EXPR_UNARY",
     "N_EXPR_BINARY",
     "N_EXPR_GROUP",

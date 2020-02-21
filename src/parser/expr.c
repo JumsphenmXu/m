@@ -8,6 +8,7 @@ struct expr *parse_expr(struct parser *p, enum prec _prec) {
     e = (struct expr *) parse_unary_expr(p);
     tk = peek_next_token(p);
     pr = get_precedence(tk);
+    // printf("parse expr before while, current %s, next %s\n", get_token_info(get_current_token(p)), get_token_info(tk));
     while (!IS_TOKEN(tk, TK_SEMICOLON) && !IS_TOKEN(tk, TK_COMMA) && _prec < pr) {
         /*
         printf("current: %s, next: %s, _prec: %s, pr: %s\n",
@@ -30,6 +31,7 @@ struct expr *parse_expr(struct parser *p, enum prec _prec) {
         tk = peek_next_token(p);
         pr = get_precedence(tk);
     }
+    // printf("parse expr after while, current %s, next %s\n", get_token_info(get_current_token(p)), get_token_info(tk));
 
     return e;
 }
@@ -66,6 +68,12 @@ struct expr *parse_unary_expr(struct parser *p) {
             break;
         case TK_LPAR:
             e = parse_group_expr(p, tk);
+            break;
+        case TK_LBR:
+            e = parse_map_expr(p, tk);
+            break;
+        case TK_LSQUARE:
+            e = parse_array_expr(p, tk);
             break;
         case TK_FUNC:
             e = parse_func_expr(p, tk);
