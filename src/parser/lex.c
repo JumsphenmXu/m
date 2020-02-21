@@ -94,6 +94,10 @@ void skip(struct lexer *lex) {
 }
 
 void back(struct lexer *lex) {
+    char ch = *lex->cur;
+    if (ch == '\n') {
+        lex->line--;
+    }
     lex->cur--;
     lex->col--;
 }
@@ -403,6 +407,9 @@ number_out:
     } else if (ch == ']') {
         t->literal[i++] = ch;
         t->type = TK_RSQUARE;
+    } else if (ch == '\n') {
+        t->literal[i++] = ch;
+        t->type = TK_NEWLINE;
     }
     goto out;
 
@@ -463,6 +470,7 @@ int find_keyword(const char *ident) {
 static const char *token_str[] = {
     "TK_INVALID",
     "TK_EOF",
+    "TK_NEWLINE",
 
     "TK_INT",
     "TK_FLOAT",

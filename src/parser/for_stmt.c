@@ -2,7 +2,7 @@
 
 struct for_stmt *parse_for_stmt(struct parser *p, struct token *tk) {
     struct for_stmt *fst;
-    struct stmt *st;
+    struct expr *e;
 
     EXPECT_TOKEN(tk, TK_FOR);
     fst = (struct for_stmt *) malloc (sizeof (struct for_stmt));
@@ -16,17 +16,19 @@ struct for_stmt *parse_for_stmt(struct parser *p, struct token *tk) {
     fst->lp = tk;
     advance_token(p);
 
-    fst->init = new_stmt_list(1);
+    fst->init = new_expr_list(1);
     CHECK_NULL(fst->init);
     tk = get_current_token(p);
     if (!IS_TOKEN(tk, TK_SEMICOLON)) {
         do {
-            st = parse_stmt(p, tk);
-            CHECK_NULL(st);
-            if (stmt_list_add(fst->init, st) < 0) {
+            e = parse_expr(p, P_LOWEST);
+            CHECK_NULL(e);
+            advance_token(p);
+            if (expr_list_add(fst->init, e) < 0) {
                 return NULL;
             }
             tk = get_current_token(p);
+            printf("for stmt: %s\n", get_token_info(tk));
             if (!IS_TOKEN(tk, TK_SEMICOLON)) {
                 EXPECT_TOKEN(tk, TK_COMMA);
                 advance_token(p); // skip comma
@@ -47,13 +49,14 @@ struct for_stmt *parse_for_stmt(struct parser *p, struct token *tk) {
     EXPECT_TOKEN(tk, TK_SEMICOLON); // 2nd semicolon
     advance_token(p);
 
-    fst->post = new_stmt_list(1);
+    fst->post = new_expr_list(1);
     CHECK_NULL(fst->post);
     tk = get_current_token(p);
     while (tk->type != TK_RPAR) {
-        st = parse_stmt(p, tk);
-        CHECK_NULL(st);
-        if (stmt_list_add(fst->post, st) < 0) {
+        e = parse_expr(p, P_LOWEST);
+        CHECK_NULL(e);
+        advance_token(p);
+        if (expr_list_add(fst->post, e) < 0) {
             return NULL;
         }
         tk = get_current_token(p);

@@ -32,6 +32,7 @@ struct block_stmt *parse_block_stmt(struct parser *p, struct token *tk) {
                 if ((st = (struct stmt *) parse_stmt(p, tk))) {
                     rc = stmt_list_add(bst->stmts, st);
                 }
+                advance_token(p);
                 break;
         }
 

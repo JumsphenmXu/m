@@ -137,7 +137,7 @@ struct expr_stmt *parse_expr_stmt(struct parser *p) {
     st->tk = get_current_token(p);
     e = parse_expr(p, P_LOWEST);
     st->e = e;
-    advance_token(p);
+    HANDLE_TRAILING(p, tk)
 
     return st;
 }

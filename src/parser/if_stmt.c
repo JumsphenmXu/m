@@ -34,9 +34,6 @@ struct if_stmt *parse_if_stmt(struct parser *p, struct token *tk) {
         if_st->_else = parse_block_stmt(p, tk);
         CHECK_NULL(if_st->_else);
         if_st->_else->tk = t_else;
-        tk = get_current_token(p);
-        EXPECT_TOKEN(tk, TK_RBR);
-        advance_token(p);
     }
 
     return if_st;
@@ -72,7 +69,10 @@ static struct if_stmt *partial_parse_if_stmt(struct parser *p, struct token *tk)
     CHECK_NULL(if_st->then);
     tk = get_current_token(p);
     EXPECT_TOKEN(tk, TK_RBR);
-    advance_token(p);
+    tk = peek_next_token(p);
+    if (IS_TOKEN(tk, TK_ELSEIF) || IS_TOKEN(tk, TK_ELSE)) {
+        advance_token(p);
+    }
 
     return if_st;
 }

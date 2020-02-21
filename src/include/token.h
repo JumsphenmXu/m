@@ -18,6 +18,7 @@
 enum token_type {
     TK_INVALID,
     TK_EOF,
+    TK_NEWLINE,
 
     TK_INT,
     TK_FLOAT,

@@ -9,7 +9,8 @@ struct return_stmt *parse_return_stmt(struct parser *p, struct token *tk) {
     st->tk = tk;
     advance_token(p);
     st->value = parse_expr(p, P_LOWEST);
-    advance_token(p);
+    CHECK_NULL(st->value);
+    HANDLE_TRAILING(p, tk)
 
     return st;
 }

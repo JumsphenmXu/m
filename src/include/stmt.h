@@ -64,9 +64,9 @@ struct block_stmt *parse_block_stmt(struct parser *p, struct token *tk);
 struct for_stmt {
     COBJECT
     struct token *lp;
-    struct stmt_list *init;
+    struct expr_list *init;
     struct expr *cond;
-    struct stmt_list *post;
+    struct expr_list *post;
     struct token *rp;
     struct block_stmt *stmts;
 };

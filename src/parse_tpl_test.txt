@@ -1,16 +1,7 @@
-var a = 1;
-val b = 2;
-
-func (i, j) {
-    return i + j;
+if (a == b) {
+    if (x == z) {
+        b = a + 1
+    }
+} else {
+    return a
 }
-
-var x = y;
-
-{
-    a = 1;
-    b = 2;
-}
-var c = 3
-
-a a b;

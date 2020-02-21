@@ -109,7 +109,7 @@ static void print_for_stmt(struct for_stmt *st, int n) {
     NTRANS(i, n);
     printf("%s (", token_expr(st->tk->type));
     for (i = 0; st->init && i < st->init->size; i++) {
-        print_stmt(stmt_list_get(st->init, i), n);
+        print_expr(expr_list_get(st->init, i));
         if (i < st->init->size - 1) {
             printf(",");
         }
@@ -120,7 +120,7 @@ static void print_for_stmt(struct for_stmt *st, int n) {
     }
     printf(";");
     for (i = 0; st->post && i < st->post->size; i++) {
-        print_stmt(stmt_list_get(st->post, i), n);
+        print_expr(expr_list_get(st->post, i));
         if (i < st->post->size - 1) {
             printf(",");
         }

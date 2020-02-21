@@ -2,7 +2,7 @@
 #define _M_LEX_H__
 
 #define M_EOF ((char)0)
-#define WHITESPACE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\n' || (ch) == '\b')
+#define WHITESPACE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\b')
 #define DIGIT(ch) ((ch) >= '0' && (ch) <= '9')
 #define ALPHANUM(ch) ((ch) >= 'a' && (ch) <= 'z' || (ch) >= 'A' && (ch) <= 'Z' || (ch) == '_' || DIGIT(ch))
 #define LEX_BUF_LEN 1024

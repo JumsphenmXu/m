@@ -25,4 +25,12 @@ int parse_from_string(struct parser *p, const char *str);
 int parse_from_file(struct parser *p, const char *filename);
 char *get_filename(struct parser *p);
 
+#define HANDLE_TRAILING(p, tk)          \
+    tk = peek_next_token(p);            \
+    if (IS_TOKEN(tk, TK_SEMICOLON)) {   \
+        advance_token(p);               \
+    } else if (!IS_TOKEN(tk, TK_EOF)) { \
+        EXPECT_TOKEN(tk, TK_NEWLINE);   \
+    }
+
 #endif

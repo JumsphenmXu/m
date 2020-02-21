@@ -27,7 +27,6 @@ struct var_stmt *parse_var_stmt(struct parser *p, struct token *tk) {
     advance_token(p);
     st->value = parse_expr(p, P_LOWEST);
     CHECK_NULL(st->value);
-    advance_token(p);
-
+    HANDLE_TRAILING(p, tk)
     return st;
 }
