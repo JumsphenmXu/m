@@ -187,12 +187,17 @@ static void print_ident_expr(struct ident_expr *e) {
 static void print_literal_expr(struct literal_expr *e) {
     ASSERT_NOT_NULL(e->tk);
     switch (e->tk->type) {
+        case TK_CHAR:
+            printf("'%s'", e->tk->literal);
+            break;
         case TK_INT:
         case TK_FLOAT:
-        case TK_STRING:
         case TK_TRUE:
         case TK_FALSE:
             printf("%s", e->tk->literal);
+            break;
+        case TK_STRING:
+            printf("\"%s\"", e->tk->literal);
             break;
         default:
             printf("unknown literal expression, %s\n", get_token_info(e->tk));

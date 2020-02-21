@@ -136,6 +136,52 @@ struct token *tokenizer(struct lexer *lex) {
     ch = next(lex);
     if (ch == M_EOF) {
         t->type = TK_EOF;
+    } else if (ch == '\'') {
+        ch = next(lex);
+        if (ch == '\\') {
+            ch = next(lex);
+            switch (ch) {
+                case 't':
+                    t->literal[i++] = '\t';
+                    break;
+                case 'n':
+                    t->literal[i++] = '\n';
+                    break;
+                case 'r':
+                    t->literal[i++] = '\r';
+                    break;
+                case 'b':
+                    t->literal[i++] = '\b';
+                    break;
+                case '\\':
+                    t->literal[i++] = '\\';
+                    break;
+                case '\'':
+                    t->literal[i++] = '\'';
+                    break;
+                default:
+                    t->type = TK_INVALID;
+                    goto out;
+            }
+        } else {
+            t->literal[i++] = ch;
+        }
+        ch = next(lex);
+        if (ch == '\'') t->type = TK_CHAR;
+    } else if (ch == '#') {
+        t->type = TK_COMMENT;
+        ch = next(lex);
+        while (ch != '\n') {
+            t->literal[i++] = ch;
+            ch = next(lex);
+        }
+    } else if (ch == '.') {
+        t->type = TK_DOT;
+        t->literal[i++] = ch;
+        ch = peek(lex);
+        if (DIGIT(ch)) {
+            goto fraction;
+        }
     } else if (DIGIT(ch)) {
         t->type = TK_INT;
         if (ch == '0') {
@@ -469,9 +515,11 @@ int find_keyword(const char *ident) {
 
 static const char *token_str[] = {
     "TK_INVALID",
+    "TK_COMMENT",
     "TK_EOF",
     "TK_NEWLINE",
 
+    "TK_CHAR",
     "TK_INT",
     "TK_FLOAT",
     "TK_STRING",
@@ -491,6 +539,7 @@ static const char *token_str[] = {
     "TK_SEMICOLON", // ;
     "TK_COLON", // :
     "TK_COMMA", // ,
+    "TK_DOT", // ,
 
     "TK_ASSIGN", // =
     "TK_EQ", // ==

@@ -41,6 +41,7 @@ struct literal_expr {
         double f;
         char *s;
         int b;
+        char c;
     } value;
 };
 struct expr *parse_literal_expr(struct parser *p);

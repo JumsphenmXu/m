@@ -17,9 +17,11 @@
 
 enum token_type {
     TK_INVALID,
+    TK_COMMENT, // #
     TK_EOF,
     TK_NEWLINE,
 
+    TK_CHAR,
     TK_INT,
     TK_FLOAT,
     TK_STRING,
@@ -39,6 +41,7 @@ enum token_type {
     TK_SEMICOLON, // ;
     TK_COLON, // :
     TK_COMMA, // ,
+    TK_DOT, // .
 
     TK_ASSIGN, // =
     TK_EQ, // ==

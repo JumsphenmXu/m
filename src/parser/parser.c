@@ -40,7 +40,7 @@ void advance_token(struct parser *p) {
         tk = tokenizer(p->lex);
         p->cur = p->next;
         p->next = tk;
-    } while (p->cur && IS_TOKEN(p->cur, TK_NEWLINE));
+    } while (p->cur && (IS_TOKEN(p->cur, TK_NEWLINE) || IS_TOKEN(p->cur, TK_COMMENT)));
 }
 
 int parse_from_string(struct parser *p, const char *str) {

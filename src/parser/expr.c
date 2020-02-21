@@ -50,6 +50,7 @@ struct expr *parse_unary_expr(struct parser *p) {
         case TK_IDENT:
             e = parse_ident_expr(p);
             break;
+        case TK_CHAR:
         case TK_INT:
         case TK_FLOAT:
         case TK_STRING:
@@ -70,6 +71,7 @@ struct expr *parse_unary_expr(struct parser *p) {
             e = parse_group_expr(p, tk);
             break;
         case TK_LBR:
+            printf("----------- map expr\n");
             e = parse_map_expr(p, tk);
             break;
         case TK_LSQUARE:

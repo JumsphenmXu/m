@@ -32,6 +32,9 @@ struct expr *parse_literal_expr(struct parser *p) {
     SET_IMMUTABLE(e);
 
     switch (tk->type) {
+        case TK_CHAR:
+            e->value.c = tk->literal[0];
+            break;
         case TK_INT:
             if (strncmp(tk->literal, "0x", 2) == 0 || strncmp(tk->literal, "0X", 2) == 0) {
                 base = 16;
