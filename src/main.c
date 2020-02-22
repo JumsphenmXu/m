@@ -41,5 +41,12 @@ int main(int argc, char *argv[]) {
         print_stmt(st, 0);
     }
 
+    iobject_init();
+    interp_init();
+
+    printf("\n\n\neval stmts:\n");
+
+    tw_eval(GLOBAL_INTERP(), p->prog);
+
     return 0;
 }

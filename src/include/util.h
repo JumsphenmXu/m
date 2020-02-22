@@ -13,4 +13,6 @@
 void m_strndup(char **dest, const char *src, size_t n);
 void m_strdup(char **dest, const char *src);
 
+unsigned int get_next_map_capacity(unsigned int cur);
+
 #endif

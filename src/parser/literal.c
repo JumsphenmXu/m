@@ -32,6 +32,8 @@ struct expr *parse_literal_expr(struct parser *p) {
     SET_IMMUTABLE(e);
 
     switch (tk->type) {
+        case TK_NIL:
+            break;
         case TK_CHAR:
             e->value.c = tk->literal[0];
             break;

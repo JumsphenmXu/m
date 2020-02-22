@@ -9,3 +9,5 @@ a = 'a';
 
 var fn = func() {return a;}
 fn();
+
+if (a) {b;} else {c;}

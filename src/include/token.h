@@ -39,6 +39,7 @@ enum token_type {
     TK_RET, // return
     TK_TRUE, // true
     TK_FALSE, // false
+    TK_NIL, // nil
 
     TK_SEMICOLON, // ;
     TK_COLON, // :

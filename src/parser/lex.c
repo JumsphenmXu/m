@@ -492,6 +492,7 @@ static const char *kw[] = {
     "return",
     "true",
     "false",
+    "nil",
 };
 
 int find_keyword(const char *ident) {
@@ -531,6 +532,7 @@ static const char *token_str[] = {
     "TK_RET \"return\"", // return
     "TK_TRUE \"true\"", // true
     "TK_FALSE \"false\"", // false
+    "TK_NIL \"nil\"", // nil
 
     "TK_SEMICOLON \";\"", // ;
     "TK_COLON \":\"", // :

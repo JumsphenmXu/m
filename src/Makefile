@@ -3,10 +3,14 @@ objs=util.o lex.o program.o var_stmt.o \
 	 output.o stmt.o literal.o block_stmt.o \
 	 if_stmt.o for_stmt.o func.o token_list.o \
 	 expr_list.o call_expr.o index_expr.o \
-	 array_expr.o map_expr.o
+	 array_expr.o map_expr.o iobject.o hash.o \
+	 treewalk_interpreter.o
 
 util.o: util/util.c include/m.h
 	gcc -c util/util.c -o util.o
+
+hash.o: util/hash.c include/m.h
+	gcc -c util/hash.c -o hash.o
 
 lex.o: parser/lex.c include/m.h
 	gcc -c parser/lex.c -o lex.o
@@ -65,6 +69,11 @@ index_expr.o: parser/index_expr.c include/m.h
 func.o: parser/func.c include/m.h
 	gcc -c parser/func.c -o func.o
 
+iobject.o: objects/iobject.c include/m.h
+	gcc -c objects/iobject.c -o iobject.o
+
+treewalk_interpreter.o: interpreter/treewalk_interpreter.c include/m.h
+	gcc -c interpreter/treewalk_interpreter.c -o treewalk_interpreter.o
 
 main.o: main.c include/parser.h
 	gcc -c main.c -o main.o

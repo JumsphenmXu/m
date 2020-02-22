@@ -7,6 +7,7 @@
 #include <stddef.h>
 
 #include "util.h"
+#include "hash.h"
 #include "token.h"
 
 enum node_type {
@@ -54,5 +55,8 @@ const char *get_node_name(enum node_type type);
 #include "expr.h"
 #include "stmt.h"
 #include "parser.h"
+
+#include "iobject.h"
+#include "treewalk_interpreter.h"
 
 #endif

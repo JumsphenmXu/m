@@ -43,9 +43,9 @@ static struct if_stmt *partial_parse_if_stmt(struct parser *p, struct token *tk)
     struct if_stmt *if_st;
 
     if_st = (struct if_stmt *) malloc (sizeof (struct if_stmt));
+    CHECK_NULL(if_st);
     if_st->elif_stmts = NULL;
     if_st->_else = NULL;
-    CHECK_NULL(if_st);
     if_st->tk = tk; // if or elif
     advance_token(p);
 

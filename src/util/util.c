@@ -3,7 +3,7 @@
 void m_strndup(char **dest, const char *src, size_t n) {
     *dest = (char *) malloc (n+1);
     memcpy(*dest, src, n);
-    dest[n] = 0;
+    (*dest)[n] = 0;
 }
 
 void m_strdup(char **dest, const char *src) {
@@ -60,4 +60,22 @@ const char *get_prec_name(enum prec p) {
         return "INVALID_PREC";
     }
     return precedences[p];
+}
+
+static unsigned int map_capacity_primes[] = {
+    7, 23, 41, 67, 89, 131, 193, 239, 277, 313, 367, 401, 467, 503,
+};
+unsigned int get_next_map_capacity(unsigned int cur) {
+    unsigned int i, n, prime;
+
+    n = sizeof(map_capacity_primes) / sizeof(unsigned int);
+    prime  = map_capacity_primes[i];
+    for (i = 0; i < n; ++i) {
+        if (cur < map_capacity_primes[i]) {
+            prime = map_capacity_primes[i];
+            break;
+        }
+    }
+
+    return prime;
 }

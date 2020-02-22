@@ -50,6 +50,7 @@ struct expr *parse_unary_expr(struct parser *p) {
         case TK_IDENT:
             e = parse_ident_expr(p);
             break;
+        case TK_NIL:
         case TK_CHAR:
         case TK_INT:
         case TK_FLOAT:
@@ -200,6 +201,7 @@ enum prec get_precedence(struct token *tk) {
         case TK_PERCENT:
             p = P_PRODUCT;
             break;
+        case TK_NIL:
         case TK_IDENT:
         case TK_INT:
         case TK_FLOAT:
