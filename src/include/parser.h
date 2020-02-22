@@ -29,8 +29,8 @@ char *get_filename(struct parser *p);
     tk = peek_next_token(p);            \
     if (IS_TOKEN(tk, TK_SEMICOLON)) {   \
         advance_token(p);               \
-    } else if (!IS_TOKEN(tk, TK_EOF)) { \
-        EXPECT_TOKEN(tk, TK_NEWLINE);   \
+    } else if (!IS_TOKEN(tk, TK_EOF) && !IS_TOKEN(tk, TK_NEWLINE)) { \
+        EXPECT_TOKEN(tk, TK_SEMICOLON);   \
     }
 
 #endif

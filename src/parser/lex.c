@@ -63,10 +63,6 @@ char next(struct lexer *lex) {
         lex->cur++;
         lex->col++;
     }
-    if (ch == '\n') {
-        lex->line++;
-        lex->col = 1;
-    }
     return ch;
 }
 
@@ -94,10 +90,6 @@ void skip(struct lexer *lex) {
 }
 
 void back(struct lexer *lex) {
-    char ch = *lex->cur;
-    if (ch == '\n') {
-        lex->line--;
-    }
     lex->cur--;
     lex->col--;
 }
@@ -175,6 +167,8 @@ struct token *tokenizer(struct lexer *lex) {
             t->literal[i++] = ch;
             ch = next(lex);
         }
+        lex->line++;
+        lex->col = 1;
     } else if (ch == '.') {
         t->type = TK_DOT;
         t->literal[i++] = ch;
@@ -456,6 +450,8 @@ number_out:
     } else if (ch == '\n') {
         t->literal[i++] = ch;
         t->type = TK_NEWLINE;
+        lex->line++;
+        lex->col = 1;
     }
     goto out;
 
@@ -514,70 +510,70 @@ int find_keyword(const char *ident) {
 }
 
 static const char *token_str[] = {
-    "TK_INVALID",
-    "TK_COMMENT",
-    "TK_EOF",
-    "TK_NEWLINE",
+    "TK_INVALID \"invalid token\"",
+    "TK_COMMENT \"#\"",
+    "TK_EOF \"end of file\"",
+    "TK_NEWLINE \"new line\"",
 
-    "TK_CHAR",
-    "TK_INT",
-    "TK_FLOAT",
-    "TK_STRING",
-    "TK_IDENT",
+    "TK_CHAR \"character literal\"",
+    "TK_INT \"int literal\"",
+    "TK_FLOAT \"float literal\"",
+    "TK_STRING \"string literal\"",
+    "TK_IDENT \"identifier\"",
 
-    "TK_VAR", // var
-    "TK_VAL", // val
-    "TK_IF", // if
-    "TK_ELSEIF", // elif
-    "TK_ELSE", // else
-    "TK_FOR", // for
-    "TK_FUNC", // func
-    "TK_RET", // return
-    "TK_TRUE", // true
-    "TK_FALSE", // false
+    "TK_VAR \"var\"", // var
+    "TK_VAL \"val\"", // val
+    "TK_IF \"if\"", // if
+    "TK_ELSEIF \"elif\"", // elif
+    "TK_ELSE \"else\"", // else
+    "TK_FOR \"for\"", // for
+    "TK_FUNC \"func\"", // func
+    "TK_RET \"return\"", // return
+    "TK_TRUE \"true\"", // true
+    "TK_FALSE \"false\"", // false
 
-    "TK_SEMICOLON", // ;
-    "TK_COLON", // :
-    "TK_COMMA", // ,
-    "TK_DOT", // ,
+    "TK_SEMICOLON \";\"", // ;
+    "TK_COLON \":\"", // :
+    "TK_COMMA \",\"", // ,
+    "TK_DOT \".\"", // ,
 
-    "TK_ASSIGN", // =
-    "TK_EQ", // ==
-    "TK_NOT", // !
-    "TK_NE", // !=
-    "TK_LT", // <
-    "TK_LSHIFT", // <<
-    "TK_LSHIFT_ASSIGN", // <<=
-    "TK_LE", // <=
-    "TK_GT", // >
-    "TK_RSHIFT", // >>
-    "TK_RSHIFT_ASSIGN", // >>=
-    "TK_GE", // >=
-    "TK_AND", // &
-    "TK_AND_ASSIGN", // &=
-    "TK_OR", // |
-    "TK_OR_ASSIGN", // |=
-    "TK_XOR", // ^
-    "TK_XOR_ASSIGN", // ^=
-    "TK_PLUS", // +
-    "TK_PLUS_ASSIGN", // +=
-    "TK_MINUS", // -
-    "TK_MINUS_ASSIGN", // -=
-    "TK_STAR", // *
-    "TK_STAR_ASSIGN", // *=
-    "TK_SLASH", // /
-    "TK_SLASH_ASSIGN", // /=
-    "TK_PERCENT", // %
-    "TK_PERCENT_ASSIGN", // %=
-    "TK_NEGATE", // ~
-    "TK_LAND", // &&
-    "TK_LOR", // ||
-    "TK_LPAR", // (
-    "TK_RPAR", // )
-    "TK_LBR", // {
-    "TK_RBR", // }
-    "TK_LSQUARE", // [
-    "TK_RSQUARE", // ]
+    "TK_ASSIGN \"=\"", // =
+    "TK_EQ \"==\"", // ==
+    "TK_NOT \"!\"", // !
+    "TK_NE \"!=\"", // !=
+    "TK_LT \"<\"", // <
+    "TK_LSHIFT \"<<\"", // <<
+    "TK_LSHIFT_ASSIGN \"<<=\"", // <<=
+    "TK_LE \"<=\"", // <=
+    "TK_GT \">\"", // >
+    "TK_RSHIFT \">>\"", // >>
+    "TK_RSHIFT_ASSIGN \">>=\"", // >>=
+    "TK_GE \">=\"", // >=
+    "TK_AND \"&\"", // &
+    "TK_AND_ASSIGN \"&=\"", // &=
+    "TK_OR \"|\"", // |
+    "TK_OR_ASSIGN \"|=\"", // |=
+    "TK_XOR \"^\"", // ^
+    "TK_XOR_ASSIGN \"^=\"", // ^=
+    "TK_PLUS \"+\"", // +
+    "TK_PLUS_ASSIGN \"+=\"", // +=
+    "TK_MINUS \"-\"", // -
+    "TK_MINUS_ASSIGN \"-=\"", // -=
+    "TK_STAR \"*\"", // *
+    "TK_STAR_ASSIGN \"*=\"", // *=
+    "TK_SLASH \"/\"", // /
+    "TK_SLASH_ASSIGN \"/=\"", // /=
+    "TK_PERCENT \"%\"", // %
+    "TK_PERCENT_ASSIGN \"%=\"", // %=
+    "TK_NEGATE \"~\"", // ~
+    "TK_LAND \"&&\"", // &&
+    "TK_LOR \"||\"", // ||
+    "TK_LPAR \"(\"", // (
+    "TK_RPAR \")\"", // )
+    "TK_LBR \"{\"", // {
+    "TK_RBR \"}\"", // }
+    "TK_LSQUARE \"[\"", // [
+    "TK_RSQUARE \"]\"", // ]
 };
 
 const char *token_expr(int type) {

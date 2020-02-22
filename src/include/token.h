@@ -8,7 +8,9 @@
 #define EXPECT_TOKEN(tk, typ) do       \
     {                                  \
         if ((tk)->type != (typ)) {     \
-            printf("expect token %s, got token, %s\n", token_expr(typ), get_token_info(tk)); \
+            printf("Error: line %d, column %d expect %s, got %s, current parsed: \"%s\"\n", \
+                    tk->line, tk->col, token_expr(typ), token_expr(tk->type),\
+                    tk->literal ? tk->literal : "NULL"); \
             exit(-1);                  \
         }                              \
     } while (0)
