@@ -67,8 +67,10 @@ struct iaddress_object {
 };
 struct iobject *new_iaddress(struct iobject *obj);
 #define ADDRESSABLE(o) ((o) && IOBJECT_TYPE((o)) == OT_ADDRESS)
-#define VALUE(o) (ADDRESSABLE(o) ? (((struct iaddress_object *) (o))->addr) : (o))
-#define SET_ADDR_VALUE(o, v) (((struct iaddress_object *) (o))->addr = (o))
+#define ADDR(o) ((struct iaddress_object *) (o))
+#define ADDR_FIELD(o) ((struct imap_item_object *) (ADDR(o)->addr))
+#define VALUE(o) (ADDRESSABLE(o) ? (ADDR_FIELD(o)->val) : (o))
+#define SET_ADDR_VALUE(o, v) (((struct imap_item_object *) ((struct iaddress_object *) (o))->addr)->val = v)
 
 #define IS_NIL(o) ((o) == &inil)
 #define IS_TRUE(o) ((o) == &itrue)
@@ -96,6 +98,8 @@ struct iliteral_object {
 };
 #define GET_ILITERAL_VALUE(i, v) ((i)->val.v)
 #define SET_ILITERAL_VALUE(i, v, e) ((i)->val.v = e)
+#define OT(o, t) IS_IOBJECT_TYPE((o), (t))
+#define IS_IOBJECT_LITERAL(o) (OT((o), OT_CHAR) || OT((o), OT_INT) || OT((o), OT_FLOAT) || OT((o), OT_STRING))
 struct iliteral_object *new_string_literal(char *s);
 struct iliteral_object *new_int_literal(long l);
 struct iliteral_object *new_float_literal(double f);
@@ -148,9 +152,10 @@ struct ifunc_object {
 };
 struct ifunc_object *new_ifunc_object(struct func_expr *fn);
 
-
 int iobject_init();
 unsigned long get_iobject_hash(struct iobject *obj);
 void iobject_print(struct iobject *obj);
+int iobject_equals(struct iobject *l, struct iobject *r);
+int iobject_less_than(struct iobject *l, struct iobject *r);
 
 #endif

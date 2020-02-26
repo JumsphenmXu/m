@@ -5,6 +5,7 @@ static int imap_rehash(struct imap_object *map);
 static int __imap_add(struct imap_object *map, struct iobject *key, struct iobject *val, int force);
 
 static int iliteral_equals(struct iobject *o1, struct iobject *o2);
+static int iliteral_less_than(struct iobject *o1, struct iobject *o2);
 static int need_rehash(struct imap_object *map);
 static int ilist_expand(struct ilist_object *list);
 static struct iliteral_object *new_iliteral();
@@ -102,6 +103,58 @@ static int iliteral_equals(struct iobject *o1, struct iobject *o2) {
             break;
     }
 
+    return rc;
+}
+
+static int iliteral_less_than(struct iobject *o1, struct iobject *o2) {
+    struct iliteral_object *io1, *io2;
+
+    io1 = (struct iliteral_object *) o1;
+    io2 = (struct iliteral_object *) o2;
+    int rc = 0;
+
+    if (SAME_OBJ(io1, io2)) {
+        return rc;
+    }
+
+    switch (IOBJECT_TYPE(o1)) {
+        case OT_CHAR:
+            rc = io1->val.c < io2->val.c;
+            break;
+        case OT_INT:
+            rc = io1->val.l < io2->val.l;
+            break;
+        case OT_FLOAT:
+            rc = io1->val.f < io2->val.f;
+            break;
+        case OT_STRING:
+            rc = strcmp(io1->val.s, io2->val.s) < 0;
+            break;
+        default:
+            break;
+    }
+
+    return rc;
+}
+
+
+int iobject_equals(struct iobject *l, struct iobject *r) {
+    int rc;
+    if (IS_IOBJECT_LITERAL(l) && IS_IOBJECT_LITERAL(r)) {
+        rc = iliteral_equals(l, r);
+    } else {
+        rc = SAME_OBJ(l, r);
+    }
+    return rc;
+}
+
+int iobject_less_than(struct iobject *l, struct iobject *r) {
+    int rc;
+    if (IS_IOBJECT_LITERAL(l) && IS_IOBJECT_LITERAL(r)) {
+        rc = iliteral_less_than(l, r);
+    } else {
+        rc = *((long *) l) < *((long *) r);
+    }
     return rc;
 }
 
@@ -435,7 +488,7 @@ struct iobject *imap_get(struct imap_object *map, struct iobject *key) {
         if (IS_IOBJECT_TYPE(item->val, OT_ADDRESS)) {
             obj = item->val;
         } else {
-            obj = new_iaddress(item->val);
+            obj = new_iaddress((struct iobject *) item);
         }
     }
 
@@ -663,5 +716,5 @@ static void iobject_print_func(struct ifunc_object *func) {
 
 static void iobject_print_address(struct iaddress_object *addr) {
     printf("address: ");
-    iobject_print(addr->addr);
+    iobject_print(((struct imap_item_object *) addr)->val);
 }

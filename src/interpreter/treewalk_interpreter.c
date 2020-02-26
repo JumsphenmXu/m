@@ -89,12 +89,16 @@ static struct tw_interp *new_tw_interp() {
     return interp;
 }
 
+int tw_empty(struct tw_interp *interp) {
+    return interp->stk->size == 0;
+}
+
 int tw_push(struct tw_interp *interp, struct iobject *obj) {
     return ilist_add(interp->stk, obj);
 }
 
 struct iobject *tw_top(struct tw_interp *interp) {
-    if (interp->stk->size > 0) {
+    if (!tw_empty(interp)) {
         return ilist_get(interp->stk, interp->stk->size - 1);
     }
     return NULL;
@@ -150,7 +154,7 @@ int tw_eval_stmt(struct tw_interp *interp, struct stmt *st) {
             rc = ENV_SET(interp->env, (struct iobject *) literal, obj);
             break;
         case N_STMT_RET:
-            ASSERT_ENV_TYPE(interp->env, ET_FUNC);
+            // ASSERT_ENV_TYPE(interp->env, ET_FUNC);
             rst = (struct return_stmt *) st;
             obj = tw_eval_expr(interp, rst->value);
             obj = VALUE(obj);
@@ -204,7 +208,7 @@ static int tw_eval_if_stmt(struct tw_interp *interp, struct if_stmt *ist) {
 
                 if (IS_TRUE(obj)) {
                     elif_eval_status = 1;
-                    rc= tw_eval_block_stmt(interp, elif_st->then);
+                    rc = tw_eval_block_stmt(interp, elif_st->then);
                     break;
                 }
             }
@@ -790,9 +794,45 @@ static struct iobject *tw_eval_binary_expr(struct tw_interp *interp, struct bina
                 return NULL;
             }
             break;
-        case TK_LPAR:
+        case TK_EQ:
+            if (iobject_equals(VALUE(lobj), VALUE(robj))) {
+                RETURN_TRUE;
+            }
+            RETURN_FALSE;
             break;
-        case TK_LSQUARE:
+        case TK_NE:
+            if (!iobject_equals(VALUE(lobj), VALUE(robj))) {
+                RETURN_TRUE;
+            }
+            RETURN_FALSE;
+            break;
+        case TK_LT:
+            if (iobject_less_than(VALUE(lobj), VALUE(robj))) {
+                RETURN_TRUE;
+            }
+            RETURN_FALSE;
+            break;
+        case TK_LE:
+            lobj = VALUE(lobj);
+            robj = VALUE(robj);
+            if (iobject_less_than(lobj, robj) || iobject_equals(lobj, robj)) {
+                RETURN_TRUE;
+            }
+            RETURN_FALSE;
+            break;
+        case TK_GT:
+            if (!iobject_less_than(VALUE(lobj), VALUE(robj))) {
+                RETURN_TRUE;
+            }
+            RETURN_FALSE;
+            break;
+        case TK_GE:
+            lobj = VALUE(lobj);
+            robj = VALUE(robj);
+            if (!iobject_less_than(lobj, robj) || iobject_equals(lobj, robj)) {
+                RETURN_TRUE;
+            }
+            RETURN_FALSE;
             break;
         default:
             break;
@@ -863,7 +903,7 @@ static struct iobject *tw_eval_call_expr(struct tw_interp *interp, struct call_e
             return NULL;
         }
 
-        if (interp->stk->size > 0) {
+        if (!tw_empty(interp)) {
             obj = tw_top(interp);
             tw_pop(interp);
             break;

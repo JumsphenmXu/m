@@ -28,7 +28,6 @@ struct for_stmt *parse_for_stmt(struct parser *p, struct token *tk) {
                 return NULL;
             }
             tk = get_current_token(p);
-            printf("for stmt: %s\n", get_token_info(tk));
             if (!IS_TOKEN(tk, TK_SEMICOLON)) {
                 EXPECT_TOKEN(tk, TK_COMMA);
                 advance_token(p); // skip comma
@@ -74,6 +73,6 @@ struct for_stmt *parse_for_stmt(struct parser *p, struct token *tk) {
     fst->stmts = parse_block_stmt(p, tk);
     tk = get_current_token(p);
     EXPECT_TOKEN(tk, TK_RBR);
-    advance_token(p);
+    // advance_token(p);
     return fst;
 }
