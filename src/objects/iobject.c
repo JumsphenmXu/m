@@ -432,7 +432,11 @@ struct iobject *imap_get(struct imap_object *map, struct iobject *key) {
     obj = NULL;
     if (item) {
         // TODO: address object not work
-        obj = new_iaddress((struct iobject *) item);
+        if (IS_IOBJECT_TYPE(item->val, OT_ADDRESS)) {
+            obj = item->val;
+        } else {
+            obj = new_iaddress(item->val);
+        }
     }
 
     return obj;
@@ -581,6 +585,9 @@ struct ifunc_object *new_ifunc_object(struct func_expr *fn) {
 ///////////////// print ///////////////
 static void iobject_print_map(struct imap_object *map);
 static void iobject_print_array(struct ilist_object *list);
+static void iobject_print_func(struct ifunc_object *func);
+static void iobject_print_address(struct iaddress_object *addr);
+
 void iobject_print(struct iobject *obj) {
     if (obj == NULL) {
         printf("NULL\n");
@@ -609,6 +616,12 @@ void iobject_print(struct iobject *obj) {
             break;
         case OT_ARRAY:
             iobject_print_array((struct ilist_object *) obj);
+            break;
+        case OT_FUNC:
+            iobject_print_func((struct ifunc_object *) obj);
+            break;
+        case OT_ADDRESS:
+            iobject_print_address((struct iaddress_object *) obj);
             break;
         default:
             printf("\n");
@@ -641,4 +654,14 @@ static void iobject_print_array(struct ilist_object *list) {
         iobject_print(ilist_get(list, i));
     }
     printf("]\n");
+}
+
+static void iobject_print_func(struct ifunc_object *func) {
+    struct func_expr *fn = func->fn;
+    printf("func\n");
+}
+
+static void iobject_print_address(struct iaddress_object *addr) {
+    printf("address: ");
+    iobject_print(addr->addr);
 }

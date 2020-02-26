@@ -743,13 +743,6 @@ static struct iobject *tw_eval_binary_expr(struct tw_interp *interp, struct bina
         case TK_MINUS_ASSIGN:
         case TK_STAR_ASSIGN:
         case TK_SLASH_ASSIGN:
-            /*
-            printf("eval binary expr: %s\n", token_expr(be->op->type));
-            lobj = VALUE(lobj);
-            iobject_print(lobj);
-            robj = VALUE(robj);
-            iobject_print(robj);
-            */
             res = tw_eval_number_binary_expr(interp, lobj, be->op->type, robj);
             break;
             break;

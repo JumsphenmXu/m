@@ -8,7 +8,7 @@ a;
 
 val d = 1 + 2 * (4 + 5) - 8;
 #d = d + 1;
-d;
+#d;
 
 var fn = func(a, b) {
     val c = a + b;
@@ -17,6 +17,7 @@ var fn = func(a, b) {
 fn(7, 3);
 
 func(c, d, e) {
-    val x = c * d + e;
-    return x;
-}(1, 2, 3);
+    val x = c * d;
+    var y = e(x, 2);
+    return y;
+}(1, 2, fn);

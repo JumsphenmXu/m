@@ -67,8 +67,8 @@ struct iaddress_object {
 };
 struct iobject *new_iaddress(struct iobject *obj);
 #define ADDRESSABLE(o) ((o) && IOBJECT_TYPE((o)) == OT_ADDRESS)
-#define VALUE(o) (ADDRESSABLE(o) ? (((struct imap_item_object *) (((struct iaddress_object *) (o))->addr))->val) : (o))
-#define SET_ADDR_VALUE(o, v) (((struct imap_item_object *) (((struct iaddress_object *) (o))->addr))->val = (o))
+#define VALUE(o) (ADDRESSABLE(o) ? (((struct iaddress_object *) (o))->addr) : (o))
+#define SET_ADDR_VALUE(o, v) (((struct iaddress_object *) (o))->addr = (o))
 
 #define IS_NIL(o) ((o) == &inil)
 #define IS_TRUE(o) ((o) == &itrue)
