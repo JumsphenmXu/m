@@ -5,6 +5,30 @@ A language parser & tree-walking interpreter
 # Language gramma
 
 ```
+program: stmt*
+
+stmt_trailer: ';'
+stmt_trailer: '\n'
+
+stmt: expr_stmt
+stmt: var_stmt
+stmt: return_stmt
+stmt: if_stmt
+stmt: for_stmt
+stmt: block_stmt
+
+expr_stmt: expr stmt_trailer
+
+var_stmt: 'var' expr '=' expr stmt_trailer
+
+return_stmt: 'return' expr stmt_trailer
+
+if_stmt: 'if' '(' expr ')' block_stmt ['elif' '(' expr ')' block_stmt]* ['else' block_stmt]?
+
+block_stmt: '{' stmt* '}' stmt_trailer
+
+for_stmt: 'for' '(' [expr_list]; [expr]; [expr_list] ')' block_stmt
+
 expr: ident_expr
 expr: literal_expr
 expr: unary_expr
@@ -42,26 +66,4 @@ array_expr: '[' expr ',' expr ',' expr ',' ... ']'
 
 map_expr: '{' [expr ':' expr]? [',' expr ':' expr]* '}'
 
-
-stmt_trailer: ';'
-stmt_trailer: '\n'
-
-stmt: expr_stmt
-stmt: var_stmt
-stmt: return_stmt
-stmt: if_stmt
-stmt: for_stmt
-stmt: block_stmt
-
-expr_stmt: expr stmt_trailer
-
-var_stmt: 'var' expr '=' expr stmt_trailer
-
-return_stmt: 'return' expr stmt_trailer
-
-if_stmt: 'if' '(' expr ')' block_stmt ['elif' '(' expr ')' block_stmt]* ['else' block_stmt]?
-
-block_stmt: '{' stmt* '}' stmt_trailer
-
-for_stmt: 'for' '(' [expr_list]; [expr]; [expr_list] ')' block_stmt
 ```
