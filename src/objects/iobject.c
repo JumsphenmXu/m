@@ -677,7 +677,7 @@ void iobject_print(struct iobject *obj) {
             iobject_print_address((struct iaddress_object *) obj);
             break;
         default:
-            printf("\n");
+            printf("unknown type\n");
             break;
     }
 }
@@ -716,5 +716,5 @@ static void iobject_print_func(struct ifunc_object *func) {
 
 static void iobject_print_address(struct iaddress_object *addr) {
     printf("address: ");
-    iobject_print(((struct imap_item_object *) addr)->val);
+    iobject_print(((struct imap_item_object *) (addr->addr))->val);
 }
