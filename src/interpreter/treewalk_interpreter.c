@@ -928,9 +928,6 @@ static struct iobject *tw_eval_index_expr(struct tw_interp *interp, struct index
     v = VALUE(v);
     CHECK_NULL(v);
 
-    // printf("index expr:\n");
-    // iobject_print(v);
-
     obj = s = e = NULL;
     i = j = -1;
     if (ie->start) {
@@ -959,20 +956,20 @@ static struct iobject *tw_eval_index_expr(struct tw_interp *interp, struct index
 
     if (IS_IOBJECT_TYPE(v, OT_ARRAY)) {
         list = (struct ilist_object *) v;
-        if (i > 0) {
-            if (j > 0) {
+        if (i >= 0) {
+            if (j >= 0) {
                 obj = (struct iobject *) ilist_get_range(list, i, j);
             } else {
                 obj = new_iaddress(ilist_get(list, i));
             }
         } else {
-            if (j > 0) {
+            if (j >= 0) {
                 obj = (struct iobject *) ilist_get_range(list, 0, j);
             }
         }
     } else if (IS_IOBJECT_TYPE(v, OT_MAP)) {
         CHECK_NULL(s);
-        obj = imap_get((struct imap_object *) v, s);
+        obj = imap_get_or_create((struct imap_object *) v, s);
     }
 
     return obj;
@@ -994,6 +991,7 @@ static struct iobject *tw_eval_array_expr(struct tw_interp *interp, struct array
     for (; i < n; i++) {
         obj = tw_eval_expr(interp, expr_list_get(ae->elems, i));
         obj = VALUE(obj);
+        obj = (struct iobject *) new_imap_item(obj, obj);
         if (ilist_add(list, obj) < 0) {
             break;
         }

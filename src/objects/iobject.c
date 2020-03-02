@@ -1,6 +1,6 @@
 #include "../include/m.h"
 
-static struct imap_item_object *new_imap_item(struct iobject *key, struct iobject *val);
+struct imap_item_object *new_imap_item(struct iobject *key, struct iobject *val);
 static int imap_rehash(struct imap_object *map);
 static int __imap_add(struct imap_object *map, struct iobject *key, struct iobject *val, int force);
 
@@ -358,7 +358,7 @@ struct iliteral_object *find_char_literal(struct imap_object *map, char c) {
 }
 
 /////// map object /////////////
-static struct imap_item_object *new_imap_item(struct iobject *key, struct iobject *val) {
+struct imap_item_object *new_imap_item(struct iobject *key, struct iobject *val) {
     struct imap_item_object *item;
 
     item = (struct imap_item_object *) malloc (sizeof (struct imap_item_object));
@@ -485,11 +485,26 @@ struct iobject *imap_get(struct imap_object *map, struct iobject *key) {
     obj = NULL;
     if (item) {
         // TODO: address object not work
-        if (IS_IOBJECT_TYPE(item->val, OT_ADDRESS)) {
+        if (item->val && IS_IOBJECT_TYPE(item->val, OT_ADDRESS)) {
             obj = item->val;
         } else {
             obj = new_iaddress((struct iobject *) item);
         }
+    }
+
+    return obj;
+}
+
+struct iobject *imap_get_or_create(struct imap_object *map, struct iobject *key) {
+    struct iobject *obj;
+
+    obj = imap_get(map, key);
+    if (obj == NULL) {
+        if (imap_set(map, key, NULL) < 0) {
+            return NULL;
+        }
+
+        obj = imap_get(map, key);
     }
 
     return obj;
@@ -701,10 +716,12 @@ static void iobject_print_map(struct imap_object *map) {
 
 static void iobject_print_array(struct ilist_object *list) {
     int i;
+    struct imap_item_object *item;
     printf("[\n");
     for (i = 0; i < list->size; i++) {
+        item = (struct imap_item_object *) ilist_get(list, i);
         printf("\telem:");
-        iobject_print(ilist_get(list, i));
+        iobject_print(item->val);
     }
     printf("]\n");
 }

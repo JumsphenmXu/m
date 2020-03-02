@@ -128,6 +128,7 @@ struct imap_item_object {
     struct iobject *val;
     struct imap_item_object *next;
 };
+struct imap_item_object *new_imap_item(struct iobject *key, struct iobject *val);
 
 #define GET_MAP_ITEM(m, i) ((m)->items[i])
 #define SET_MAP_ITEM(m, i, t) ((m)->items[i] = t)
@@ -144,6 +145,7 @@ struct imap_object *new_imap();
 int imap_add(struct imap_object *map, struct iobject *key, struct iobject *val);
 int imap_set(struct imap_object *map, struct iobject *key, struct iobject *val);
 struct iobject *imap_get(struct imap_object *map, struct iobject *key);
+struct iobject *imap_get_or_create(struct imap_object *map, struct iobject *key);
 
 struct func_expr;
 struct ifunc_object {
