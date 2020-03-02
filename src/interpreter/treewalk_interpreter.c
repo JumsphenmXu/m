@@ -749,7 +749,6 @@ static struct iobject *tw_eval_binary_expr(struct tw_interp *interp, struct bina
         case TK_SLASH_ASSIGN:
             res = tw_eval_number_binary_expr(interp, lobj, be->op->type, robj);
             break;
-            break;
         case TK_PERCENT:
         case TK_AND:
         case TK_OR:
@@ -799,19 +798,16 @@ static struct iobject *tw_eval_binary_expr(struct tw_interp *interp, struct bina
                 RETURN_TRUE;
             }
             RETURN_FALSE;
-            break;
         case TK_NE:
             if (!iobject_equals(VALUE(lobj), VALUE(robj))) {
                 RETURN_TRUE;
             }
             RETURN_FALSE;
-            break;
         case TK_LT:
             if (iobject_less_than(VALUE(lobj), VALUE(robj))) {
                 RETURN_TRUE;
             }
             RETURN_FALSE;
-            break;
         case TK_LE:
             lobj = VALUE(lobj);
             robj = VALUE(robj);
@@ -819,13 +815,11 @@ static struct iobject *tw_eval_binary_expr(struct tw_interp *interp, struct bina
                 RETURN_TRUE;
             }
             RETURN_FALSE;
-            break;
         case TK_GT:
             if (!iobject_less_than(VALUE(lobj), VALUE(robj))) {
                 RETURN_TRUE;
             }
             RETURN_FALSE;
-            break;
         case TK_GE:
             lobj = VALUE(lobj);
             robj = VALUE(robj);
@@ -833,7 +827,6 @@ static struct iobject *tw_eval_binary_expr(struct tw_interp *interp, struct bina
                 RETURN_TRUE;
             }
             RETURN_FALSE;
-            break;
         default:
             break;
     }
