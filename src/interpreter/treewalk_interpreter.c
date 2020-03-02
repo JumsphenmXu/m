@@ -960,7 +960,7 @@ static struct iobject *tw_eval_index_expr(struct tw_interp *interp, struct index
             if (j >= 0) {
                 obj = (struct iobject *) ilist_get_range(list, i, j);
             } else {
-                obj = new_iaddress(ilist_get(list, i));
+                obj = ilist_get(list, i);
             }
         } else {
             if (j >= 0) {
@@ -992,6 +992,7 @@ static struct iobject *tw_eval_array_expr(struct tw_interp *interp, struct array
         obj = tw_eval_expr(interp, expr_list_get(ae->elems, i));
         obj = VALUE(obj);
         obj = (struct iobject *) new_imap_item(obj, obj);
+        obj = new_iaddress(obj);
         if (ilist_add(list, obj) < 0) {
             break;
         }

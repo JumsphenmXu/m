@@ -716,12 +716,10 @@ static void iobject_print_map(struct imap_object *map) {
 
 static void iobject_print_array(struct ilist_object *list) {
     int i;
-    struct imap_item_object *item;
     printf("[\n");
     for (i = 0; i < list->size; i++) {
-        item = (struct imap_item_object *) ilist_get(list, i);
         printf("\telem:");
-        iobject_print(item->val);
+        iobject_print(VALUE(ilist_get(list, i)));
     }
     printf("]\n");
 }
