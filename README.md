@@ -50,9 +50,11 @@ var, if, elif, else, func, return, true, false, nil
 
 
 # Builtin functions
-* `print:` print object value
-* `type:`  calculate object type
-* `len:`   calculate array/map object length
+* `print(obj):` print object value
+* `type(obj):`  calculate object type
+* `len(array_or_map):` calculate array/map length
+* `append(array, obj):` append obj to array
+* `del(array, index_or_key):` delete item from array or map
 
 # Sample
 
