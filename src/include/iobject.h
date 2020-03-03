@@ -118,6 +118,7 @@ struct ilist_object {
 };
 struct ilist_object *new_ilist();
 int ilist_add(struct ilist_object *list, struct iobject *obj);
+int ilist_del(struct ilist_object *list, struct iobject *idx);
 int ilist_set(struct ilist_object *list, struct iobject *idx, struct iobject *obj);
 struct iobject *ilist_get(struct ilist_object *list, int i);
 struct iobject *ilist_get_range(struct ilist_object *list, int i, int j);
@@ -146,6 +147,7 @@ struct imap_object {
 struct imap_object *new_imap();
 int imap_add(struct imap_object *map, struct iobject *key, struct iobject *val);
 int imap_set(struct imap_object *map, struct iobject *key, struct iobject *val);
+int imap_del(struct imap_object *map, struct iobject *key);
 struct iobject *imap_get(struct imap_object *map, struct iobject *key);
 struct iobject *imap_get_or_create(struct imap_object *map, struct iobject *key);
 

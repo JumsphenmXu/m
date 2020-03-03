@@ -1,0 +1,11 @@
+var a = [1, 2, 3, 4];
+a = append(a, 5);
+print(a);
+
+del(a, 0);
+print(a);
+
+var b = {"a": 1, "v": "vi"};
+print(b);
+del(b, "a");
+print(b);

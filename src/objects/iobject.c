@@ -449,6 +449,53 @@ int imap_set(struct imap_object *map, struct iobject *key, struct iobject *val) 
     return __imap_add(map, key, val, 1);
 }
 
+int imap_del(struct imap_object *map, struct iobject *key) {
+    unsigned long hash;
+    int idx;
+    struct imap_item_object *prev_item, *item;
+
+    if (IS_HASH_INVALID(key)) {
+        hash = get_iobject_hash(key);
+        key->hash = hash;
+    } else {
+        hash = key->hash;
+    }
+
+    idx = hash % map->cap;
+    item = NULL;
+    prev_item = NULL;
+    if ((item = map->items[idx])) {
+        while (item) {
+            if (SAME_OBJ(item->key, key)) {
+                break;
+            }
+
+            if (IS_LITERAL_IOBJECT(key) &&
+                    IS_LITERAL_IOBJECT(item->key) &&
+                    iliteral_equals(item->key, key)) {
+                break;
+            } else {
+                // TODO: more types
+            }
+
+            prev_item = item;
+            item = item->next;
+        }
+    }
+
+    if (item) {
+        if (prev_item) {
+            prev_item->next = item->next;
+        } else {
+            map->items[idx] = item->next;
+        }
+        item->next = NULL;
+        free(item);
+    }
+
+    RETURN_OK;
+}
+
 struct iobject *imap_get(struct imap_object *map, struct iobject *key) {
     unsigned long hash;
     int idx;
@@ -571,6 +618,28 @@ int ilist_add(struct ilist_object *list, struct iobject *obj) {
         }
     }
     list->elems[list->size++] = obj;
+    RETURN_OK;
+}
+
+int ilist_del(struct ilist_object *list, struct iobject *idx) {
+    int i, j;
+    if (!IS_IOBJECT_TYPE(idx, OT_INT)) {
+        RETURN_ERROR;
+    }
+
+    i = GET_ILITERAL_VALUE((struct iliteral_object *) idx, l);
+    if (i < 0 || i >= list->size) {
+        RETURN_ERROR;
+    }
+
+    j = i + 1;
+    while (j < list->size) {
+        list->elems[i] = ilist_get(list, j);
+        i++;
+        j++;
+    }
+    list->size--;
+
     RETURN_OK;
 }
 

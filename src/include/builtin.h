@@ -12,7 +12,9 @@ struct ibuiltin_func *new_ibuiltin_func(function fn);
 
 struct iobject *bltin_print(struct tw_interp *interp, struct iobject *obj);
 struct iobject *bltin_type(struct tw_interp *interp, struct iobject *obj);
+struct iobject *bltin_append(struct tw_interp *interp, struct iobject *obj);
 struct iobject *bltin_len(struct tw_interp *interp, struct iobject *obj);
+struct iobject *bltin_del(struct tw_interp *interp, struct iobject *obj);
 
 int ibuiltin_init();
 

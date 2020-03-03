@@ -38,7 +38,7 @@ struct iobject *bltin_type(struct tw_interp *interp, struct iobject *obj) {
     if (IS_IOBJECT_TYPE(obj, OT_ARRAY)) {
         list = (struct ilist_object *) obj;
         if (list->size != 1) {
-            printf("parameter number of <type> function is limited to 1, %ld is provided\n", list->size);
+            printf("builtin <type> function expect exactly 1 parameters, %ld is provided\v", list->size);
             RETURN_NIL;
         }
         obj = ilist_get(list, 0);
@@ -95,16 +95,13 @@ struct iobject *bltin_len(struct tw_interp *interp, struct iobject *obj) {
     unsigned long l;
 
     if (!IS_IOBJECT_TYPE(obj, OT_ARRAY)) {
-    if (!IS_IOBJECT_TYPE(obj, OT_ARRAY)) {
         printf("invalid parameter format for bulitin <len> function, array is expected\n");
-        RETURN_NIL;
-    }
         RETURN_NIL;
     }
 
     list = (struct ilist_object *) obj;
     if (list->size != 1) {
-        printf("builtin <len> function expect exactly one parameters, %ld is provided\v", list->size);
+        printf("builtin <len> function expect exactly 1 parameters, %ld is provided\v", list->size);
         RETURN_NIL;
     }
 
@@ -123,8 +120,75 @@ struct iobject *bltin_len(struct tw_interp *interp, struct iobject *obj) {
     return len;
 }
 
+struct iobject *bltin_append(struct tw_interp *interp, struct iobject *obj) {
+    struct iobject *v;
+    struct ilist_object *list;
+
+    if (!IS_IOBJECT_TYPE(obj, OT_ARRAY)) {
+        printf("invalid parameter format for bulitin <append> function, array is expected\n");
+        RETURN_NIL;
+    }
+
+    list = (struct ilist_object *) obj;
+    if (list->size != 2) {
+        printf("builtin <append> function expect exactly 2 parameters, %ld is provided\v", list->size);
+        RETURN_NIL;
+    }
+
+    v = VALUE(ilist_get(list, 0));
+    if (!IS_IOBJECT_TYPE(v, OT_ARRAY)) {
+        printf("invalid parameter format for bulitin <append> function, the first parameter must be array\n");
+        RETURN_NIL;
+    }
+    obj = VALUE(ilist_get(list, 1));
+    list = (struct ilist_object *) v;
+    if (ilist_add(list, obj) < 0) {
+        RETURN_NIL;
+    }
+
+    return (struct iobject *) list;
+}
+
+struct iobject *bltin_del(struct tw_interp *interp, struct iobject *obj) {
+    struct iobject *v;
+    struct ilist_object *list;
+    struct imap_object *map;
+
+    if (!IS_IOBJECT_TYPE(obj, OT_ARRAY)) {
+        printf("invalid parameter format for bulitin <del> function, array is expected\n");
+        RETURN_NIL;
+    }
+
+    list = (struct ilist_object *) obj;
+    if (list->size != 2) {
+        printf("builtin <append> function expect exactly 2 parameters, %ld is provided\v", list->size);
+        RETURN_NIL;
+    }
+
+    v = VALUE(ilist_get(list, 0));
+    obj = VALUE(ilist_get(list, 1));
+    if (IS_IOBJECT_TYPE(v, OT_ARRAY)) {
+        list = (struct ilist_object *) v;
+        if (ilist_del(list, obj) < 0) {
+            RETURN_NIL;
+        }
+        v = (struct iobject *) list;
+    } else if (IS_IOBJECT_TYPE(v, OT_MAP)) {
+        map = (struct imap_object *) v;
+        if (imap_del(map, obj) < 0) {
+            RETURN_NIL;
+        }
+        v = (struct iobject *) map;
+    } else {
+        printf("invalid parameter format for bulitin <del> function, the first parameter must be array or map\n");
+        RETURN_NIL;
+    }
+
+    return v;
+}
+
 int ibuiltin_init() {
-    struct ibuiltin_func *print_fn, *type_fn, *len_fn;
+    struct ibuiltin_func *print_fn, *type_fn, *len_fn, *append_fn, *del_fn;
     struct iliteral_object *literal;
 
     print_fn = new_ibuiltin_func(bltin_print);
@@ -141,6 +205,16 @@ int ibuiltin_init() {
     literal = find_string_literal(GLOBAL_INTERP()->consts, "len");
     CHECK_NULL_ERROR(literal);
     ENV_SET(GLOBAL_INTERP()->env, (struct iobject *) literal, (struct iobject *) len_fn);
+
+    append_fn = new_ibuiltin_func(bltin_append);
+    literal = find_string_literal(GLOBAL_INTERP()->consts, "append");
+    CHECK_NULL_ERROR(literal);
+    ENV_SET(GLOBAL_INTERP()->env, (struct iobject *) literal, (struct iobject *) append_fn);
+
+    del_fn = new_ibuiltin_func(bltin_del);
+    literal = find_string_literal(GLOBAL_INTERP()->consts, "del");
+    CHECK_NULL_ERROR(literal);
+    ENV_SET(GLOBAL_INTERP()->env, (struct iobject *) literal, (struct iobject *) del_fn);
 
     RETURN_OK;
 }
