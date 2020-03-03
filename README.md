@@ -50,9 +50,9 @@ var, if, elif, else, func, return, true, false, nil
 
 
 # Builtin functions
-`**` print `**` print object value
-`**` type `**` calculate object type
-`**` len `**` calculate array/map object length
+* `print:` print object value
+* `type:`  calculate object type
+* `len:`   calculate array/map object length
 
 # Sample
 
@@ -93,7 +93,7 @@ print(sum(100));
 # array and map operation
 var arr = [1, 'a', 'b', "a string here"];
 arr[0] = {'a': "char", 1: "int"};
-print(a[0]['a']); # eval to "char"
+print(arr[0]['a']); # eval to "char"
 arr[0]["new key"] = "new val";
 
 ```
