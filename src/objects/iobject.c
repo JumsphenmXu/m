@@ -67,7 +67,7 @@ unsigned long get_iobject_hash(struct iobject *obj) {
             break;
         default:
             if (obj->hfunc) {
-                hash = obj->hfunc(obj);
+                hash = ((struct iliteral_object *) (obj->hfunc(obj)))->val.l;
             } else {
                 printf("can not be used as map key\n");
             }
@@ -651,6 +651,7 @@ struct ifunc_object *new_ifunc_object(struct func_expr *fn) {
 }
 
 ///////////////// print ///////////////
+static void iobject_print_map_item(struct imap_item_object *obj);
 static void iobject_print_map(struct imap_object *map);
 static void iobject_print_array(struct ilist_object *list);
 static void iobject_print_func(struct ifunc_object *func);
@@ -664,20 +665,26 @@ void iobject_print(struct iobject *obj) {
 
     obj = VALUE(obj);
     switch (IOBJECT_TYPE(obj)) {
+        case OT_NIL:
+            printf("nil");
+            break;
         case OT_CHAR:
-            printf("char \"%c\"\n", ((struct iliteral_object *) obj)->val.c);
+            printf("%c", ((struct iliteral_object *) obj)->val.c);
             break;
         case OT_INT:
-            printf("int \"%ld\"\n", ((struct iliteral_object *) obj)->val.l);
+            printf("%ld", ((struct iliteral_object *) obj)->val.l);
             break;
         case OT_FLOAT:
-            printf("float \"%.2f\"\n", ((struct iliteral_object *) obj)->val.f);
+            printf("%.2f", ((struct iliteral_object *) obj)->val.f);
             break;
         case OT_BOOL:
-            printf("bool \"%s\"\n", (IS_TRUE(obj) ? "true" : "false"));
+            printf("%s", (IS_TRUE(obj) ? "true" : "false"));
             break;
         case OT_STRING:
-            printf("string \"%s\"\n", ((struct iliteral_object *) obj)->val.s);
+            printf("%s", ((struct iliteral_object *) obj)->val.s);
+            break;
+        case OT_MAP_ITEM:
+            iobject_print_map_item((struct imap_item_object *) obj);
             break;
         case OT_MAP:
             iobject_print_map((struct imap_object *) obj);
@@ -692,9 +699,17 @@ void iobject_print(struct iobject *obj) {
             iobject_print_address((struct iaddress_object *) obj);
             break;
         default:
-            printf("unknown type\n");
             break;
     }
+}
+
+static void iobject_print_map_item(struct imap_item_object *item) {
+    printf("<");
+    printf(" key: ");
+    iobject_print(item->key);
+    printf(" ,val: ");
+    iobject_print(item->val);
+    printf(">\n");
 }
 
 static void iobject_print_map(struct imap_object *map) {
@@ -706,12 +721,12 @@ static void iobject_print_map(struct imap_object *map) {
         while (item) {
             printf("\tkey: ");
             iobject_print(item->key);
-            printf("\tval: ");
+            printf(", val: ");
             iobject_print(item->val);
             item = item->next;
         }
     }
-    printf("}\n\n");
+    printf("\n}\n");
 }
 
 static void iobject_print_array(struct ilist_object *list) {
@@ -721,7 +736,7 @@ static void iobject_print_array(struct ilist_object *list) {
         printf("\telem:");
         iobject_print(VALUE(ilist_get(list, i)));
     }
-    printf("]\n");
+    printf("\n]\n");
 }
 
 static void iobject_print_func(struct ifunc_object *func) {

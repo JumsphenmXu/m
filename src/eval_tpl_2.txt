@@ -15,4 +15,12 @@ var fn = func (n) {
     return r;
 }
 
-fn(10);
+var r = fn(10);
+print(r);
+
+var fn2 = func() {
+    print(a);
+}
+
+var r2 = fn2();
+print(r2);

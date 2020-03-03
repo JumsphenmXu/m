@@ -4,7 +4,7 @@ objs=util.o lex.o program.o var_stmt.o \
 	 if_stmt.o for_stmt.o func.o token_list.o \
 	 expr_list.o call_expr.o index_expr.o \
 	 array_expr.o map_expr.o iobject.o hash.o \
-	 treewalk_interpreter.o
+	 builtin.o treewalk_interpreter.o
 
 util.o: util/util.c include/m.h
 	gcc -c util/util.c -o util.o
@@ -71,6 +71,9 @@ func.o: parser/func.c include/m.h
 
 iobject.o: objects/iobject.c include/m.h
 	gcc -c objects/iobject.c -o iobject.o
+
+builtin.o: interpreter/builtin.c include/m.h
+	gcc -c interpreter/builtin.c -o builtin.o
 
 treewalk_interpreter.o: interpreter/treewalk_interpreter.c include/m.h
 	gcc -c interpreter/treewalk_interpreter.c -o treewalk_interpreter.o

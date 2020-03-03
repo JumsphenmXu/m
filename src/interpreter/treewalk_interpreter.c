@@ -42,7 +42,7 @@ int interp_init() {
     __interp_ = new_tw_interp();
     CHECK_NULL_ERROR(__interp_);
 
-    RETURN_OK;
+    return ibuiltin_init();
 }
 
 ///////// env object /////////////
@@ -173,8 +173,8 @@ int tw_eval_stmt(struct tw_interp *interp, struct stmt *st) {
             est = (struct expr_stmt *) st;
             obj = tw_eval_expr(interp, est->e);
             obj = VALUE(obj);
-            printf("$$ ");
-            iobject_print(obj);
+            // printf("$$ ");
+            // iobject_print(obj);
             break;
         default:
             break;
@@ -845,35 +845,43 @@ static struct iobject *tw_eval_call_expr(struct tw_interp *interp, struct call_e
     int i, n;
     struct token_list *tparams;
     struct block_stmt *bst;
-    struct iobject *obj;
+    struct iobject *obj, *eobj;
     struct iliteral_object *literal;
     struct ifunc_object *fobj;
     struct ilist_object *eparams;
+    struct ibuiltin_func *bltin_fn;
     struct tw_env *env;
 
     obj = tw_eval_expr(interp, ce->fn);
     CHECK_NULL(obj);
     obj = VALUE(obj);
+
+    n = 0;
+    if (ce->params) {
+        n = ce->params->size;
+    }
+    eparams = new_ilist();
+    for (i = 0; i < n; i++) {
+        eobj = tw_eval_expr(interp, expr_list_get(ce->params, i));
+        if (ilist_add(eparams, eobj) < 0) {
+            return NULL;
+        }
+    }
+
+    if (IS_IOBJECT_TYPE(obj, OT_BUILTIN_FUNC)) {
+        bltin_fn = (struct ibuiltin_func *) obj;
+        return bltin_fn->fn(interp, (struct iobject *) eparams);
+    }
+
     if (!IS_IOBJECT_TYPE(obj, OT_FUNC)) {
         return NULL;
     }
     fobj = (struct ifunc_object *) obj;
 
-    n = 0;
-    if ((tparams=fobj->fn->params)) {
-        n = tparams->size;
-    }
-
-    if (n != 0 && (!ce->params || ce->params->size != n)) {
+    tparams=fobj->fn->params;
+    if ((!tparams && n) || (tparams && tparams->size != n)) {
+        printf("# of params unmatched\n");
         return NULL;
-    }
-
-    eparams = new_ilist();
-    for (i = 0; i < n; i++) {
-        obj = tw_eval_expr(interp, expr_list_get(ce->params, i));
-        if (ilist_add(eparams, obj) < 0) {
-            return NULL;
-        }
     }
 
     ENTER_ENV(interp, env, ET_FUNC)

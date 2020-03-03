@@ -58,5 +58,6 @@ const char *get_node_name(enum node_type type);
 
 #include "iobject.h"
 #include "treewalk_interpreter.h"
+#include "builtin.h"
 
 #endif

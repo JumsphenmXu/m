@@ -8,8 +8,9 @@ void m_strndup(char **dest, const char *src, size_t n) {
 
 void m_strdup(char **dest, const char *src) {
     int n = strlen(src);
-    *dest = (char *) malloc (n);
+    *dest = (char *) malloc (n + 1);
     memcpy(*dest, src, n);
+    (*dest)[n] = 0;
 }
 
 static const char *node_name[] = {

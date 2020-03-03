@@ -20,20 +20,22 @@ enum iobject_type {
     OT_MAP_ITEM,
     OT_MAP,
     OT_FUNC,
+    OT_BUILTIN_FUNC,
     OT_ENV,
 };
 
 struct iobject;
+struct tw_interp;
 struct imap_object;
 
 #define F_ASSIGNABLE (1 << 0)
 
-typedef unsigned long (*hash_func)(struct iobject *);
+typedef struct iobject *(*unary_func) (struct iobject *);
 
 #define IOBJECT_HEAD         \
     enum iobject_type type;  \
     unsigned long hash, flag;\
-    hash_func hfunc;
+    unary_func hfunc;
 
 #define INVALID_HASH_VALUE (0)
 #define IS_HASH_INVALID(o) ((o)->hash == INVALID_HASH_VALUE)
