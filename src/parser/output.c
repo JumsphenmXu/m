@@ -89,6 +89,7 @@ static void print_block_stmt(struct block_stmt *st, int n) {
 
 static void print_if_stmt(struct if_stmt *st, int n) {
     int i, j;
+    struct if_stmt *ist;
     NTRANS(i, n);
     printf("%s (", token_expr(st->tk->type));
     print_expr(st->cond);
@@ -96,7 +97,11 @@ static void print_if_stmt(struct if_stmt *st, int n) {
     print_block_stmt(st->then, n);
     if (st->elif_stmts) {
         for (j = 0; j < st->elif_stmts->size; ++j) {
-            print_if_stmt((struct if_stmt *) stmt_list_get(st->elif_stmts, j), n);
+            ist = (struct if_stmt *) stmt_list_get(st->elif_stmts, j);
+            printf("%s (", token_expr(ist->tk->type));
+            print_expr(ist->cond);
+            printf(")");
+            print_block_stmt(ist->then, n);
         }
     }
     if (st->_else) {
