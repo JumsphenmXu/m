@@ -45,7 +45,7 @@ bop: '+' | '+=' | '-' | '-=' | '&' | '&=' | '^' | '^=' | '|' | '|=' | '*' | '*='
 
 # Keywords
 ``` 
-var, if, elif, else, func, return, true, false, nil
+var, for, if, elif, else, func, return, true, false, nil
 ```
 
 
