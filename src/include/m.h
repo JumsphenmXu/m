@@ -60,4 +60,9 @@ const char *get_node_name(enum node_type type);
 #include "treewalk_interpreter.h"
 #include "builtin.h"
 
+#include "opcode.h"
+#include "code.h"
+#include "compiler.h"
+#include "vm.h"
+
 #endif

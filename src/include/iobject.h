@@ -22,6 +22,8 @@ enum iobject_type {
     OT_FUNC,
     OT_BUILTIN_FUNC,
     OT_ENV,
+    OT_INST,
+    OT_CODE,
 };
 
 struct iobject;

@@ -1,0 +1,10 @@
+var fn = func(a) {
+    if (a <= 1) {
+        return a;
+    }
+    
+    return fn(a-1) + fn(a-2);
+}
+
+var b = fn(10);
+print(b);
