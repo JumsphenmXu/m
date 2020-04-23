@@ -1,15 +1,15 @@
 #include "include/m.h"
 
-int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        printf("please specify an input file\n");
-        return 0;
-    }
 
+static int _proc(char *s, int is_file) {
     struct parser *p = new_parser();
     struct stmt *st;
     int i = 0;
-    parse_from_file(p, argv[1]);
+    if (is_file) {
+        parse_from_file(p, s);
+    } else {
+        parse_from_string(p, s);
+    }
 
     CHECK_NULL_ERROR(p->prog);
     CHECK_NULL_ERROR(p->prog->stmts);
@@ -25,6 +25,23 @@ int main(int argc, char *argv[]) {
 
     printf("\n\n\neval stmts:\n");
     tw_eval(GLOBAL_INTERP(), p->prog);
+
+    return 0;
+}
+
+
+int main(int argc, char *argv[]) {
+    if (argc >= 2) {
+        return _proc(argv[1], 1);
+    }
+
+    char buf[2048];
+    while (1) {
+        printf(">>> ");
+        memset(buf, 0, 2048);
+        fgets(buf, 2048, stdin);
+        _proc(buf, 0);
+    }
 
     return 0;
 }
