@@ -2,6 +2,14 @@
 
 A language parser & tree-walking interpreter
 
+# Usage
+```
+git clone https://github.com/CJYH/m.git
+cd ./m/src
+make main
+./main ./test/eval_test1.em
+```
+
 # Language gramma
 
 ```
@@ -14,27 +22,28 @@ var_stmt: 'var' expr '=' expr stmt_trailer
 return_stmt: 'return' expr stmt_trailer
 if_stmt: 'if' '(' expr ')' block_stmt ['elif' '(' expr ')' block_stmt]* ['else' block_stmt]?
 block_stmt: '{' stmt* '}' stmt_trailer
-for_stmt: 'for' '(' [expr? [ ',' expr]*] ';' [expr] ';' [expr? [',' expr]*] ')' block_stmt
+for_stmt: 'for' '(' [expr_list] ';' [expr] ';' [expr_list] ')' block_stmt
 
 expr: ident_expr | literal_expr | unary_expr | binary_expr | group_expr |
       array_expr | map_expr | index_expr | func_expr | call_expr
+expr_list: EMPTY | expr [, expr]*
 
 ident_expr: [_a-zA-Z][_a-zA-Z0-9]*
 literal_expr: char | bool | int | float | string
 bool: 'true' | 'false'
-char: \u0-\u127
+char: 0-127
 int: 0 | [1-9][0-9]* | 0x[0-9a-fA-F]
 float: [0 | [1-9][0-9]* | 0x[0-9a-fA-F] ] '.' [e|E [+ | -]] [0-9]*
-string: "[\u0-\u127]*"
+string: '"'[char]*'"'
 
 unary_expr: [uop] expr
 binary_expr: expr bop expr
 group_expr: '(' expr ')'
-func_expr: 'func' '(' expr? [',' expr]* ')' block_stmt
+func_expr: 'func' '(' expr_list )' block_stmt
 index_expr: expr '[' expr [':'] [expr] ']'
-call_expr: expr '(' expr? [',' expr]* ')'
-array_expr: '[' expr ',' expr ',' expr ',' ... ']'
-map_expr: '{' [expr ':' expr]? [',' expr ':' expr]* '}'
+call_expr: expr '(' expr_list ')'
+array_expr: '[' expr_list ']'
+map_expr: '{' EMPTY | [expr ':' expr] [',' expr ':' expr]* '}'
 
 uop: '+' | '-' | '!' | '~'
 bop: '+' | '+=' | '-' | '-=' | '&' | '&=' | '^' | '^=' | '|' | '|=' | '*' | '*=' |
